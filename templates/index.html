@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block header %}
+{% endblock %}
+{% block content %}
+	<form action="javascript:;">
+		{% csrf_token %}
+		<input type="text" name="name">
+		<input type="checkbox" name="direct"/>
+		<input type="submit">
+	</form>
+	<div id="msg"></div>
+{% endblock %}
+{% block scripts %}
+	<script>
+		$("form").submit(function() {
+			$.post("/{{ url }}", $(this).serialize(), function (data) {
+				$("#msg").html(data["d"])
+            })
+        })
+		{% comment %}$("td").(function(e) {
+		    var arr = $("form").serializeArray();
+		    console.log("OASDOIJ");
+		    arr.each(function(i, el) {
+		        if(arr[i].data == "name")
+		        {
+		            arr[i] = $(this).text();
+		            return false;
+		        }
+		    })
+			console.log(arr);
+			$.post("/{{ url }}", jQuery.param(arr), function (data) {
+				$("#msg").html(data["d"])
+            })
+			e.preventDefault();
+		}){% endcomment %}
+	</script>
+{% endblock %}

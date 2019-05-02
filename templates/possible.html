@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Possible{% endblock %}
+{% block header %}
+{% endblock %}
+{% block content %}
+	<form action="javascript:;" id="add">
+		{% csrf_token %}
+		<input type="text" name="module">
+		<input type="submit" value="Add">
+	</form>
+	<div id="modules">
+
+	</div>
+	<form action="javascript:;" id="submit">
+		{% csrf_token %}
+		<label for="direct">Direct: </label>
+		<input id="direct" type="checkbox" name="direct"/><br>
+		<input type="submit"/>
+	</form>
+	<div id="msg"></div>
+{% endblock %}
+{% block scripts %}
+
+	<script>
+		$("#add").submit(function () {
+			$.post("/getmodule/", $(this).serialize(), function (data) {
+			    var m = data["module"];
+			    if($("#"+m["code"]).length == 0)
+			    {
+					$("#modules").append("<div id="+ m["code"] +">"+ m["name"] +"<button onclick=\"$(this).parent().remove();\"></button></div>");
+				}
+            })
+        })
+		$("#submit").submit(function() {
+			var form = $(this).serializeArray()
+			$("#modules > *").each(function(i, el) {
+			    //modules.push(el.id);
+				form.push({name: "modules[]", value: el.id})
+			})
+
+			$.post("/possible/", form, function(data) {
+			    var table = $(data["d"]);
+				$("td", table).each(function(i, el) {
+					if($("#"+el.id).length == 0)
+					{
+					    $(el, table).css({"border-color": "red"})
+					}
+				});
+			    $("#msg").html(table)
+			})
+		})
+	</script>
+{% endblock %}

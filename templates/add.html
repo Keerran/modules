@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Add{% endblock %}
+{% block header %}
+{% endblock %}
+{% block content %}
+	<form action="javascript:;">
+		{% csrf_token %}
+		<input type="text" name="name">
+		<input type="text" name="parent">
+		<select name="year">
+			<option>1</option>
+			<option>2</option>
+			<option>3</option>
+			<option>3/4</option>
+			<option>4</option>
+		</select>
+		<input type="submit">
+	</form>
+	<span id="msg"></span>
+{% endblock %}
+{% block scripts %}
+	<script>
+		$("form").submit(function () {
+			$.post("/add/   ", $(this).serialize(), function (data) {
+				$("#msg").text(data["name"] + " | " + data["parent"])
+            })
+        })
+	</script>
+{% endblock %}
